@@ -1,0 +1,72 @@
+#container {
+  position: absolute;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -150px 0 0 -250px;
+  border: 1px solid black;
+}
+
+#display-table{
+  margin-left: 86px;
+  margin-top: 20px;
+  margin-right: 86px;
+}
+
+#display-table td, #display-table th {
+  border: 1px solid #a3a3a3;
+  padding: 8px;
+}
+
+#add-state-table td, #add-state-table th {
+  padding: 0px;
+  border: 1px;
+}
+
+.connection{
+  border: 1px solid #a3a3a3;
+}
+
+#transition-button {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+#add-state-section{
+  display: flex;
+  margin-left: 10px;
+}
+.init-hidden{
+  visibility: hidden;  
+}
+
+.start-end-states{
+  visibility: hidden;  
+}
+
+#initial-prompt{
+  margin-left: 100px;
+  margin-top: 100px;
+}
+
+.start-end-states{
+  margin-left: 10px;
+  margin-top: 15px;
+  margin-bottom: -10px;
+}
+
+
+/*
+#container {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -150px;
+  background: red;
+}
+<div id="outPopUp">
+*/

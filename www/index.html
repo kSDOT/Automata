@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Automata</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <script src="./bootstrap.js"></script>
+
+    <div id="container">
+
+      <div id="initial-prompt">
+        Start new automata: 
+        <div id="set-alphabet-section">
+          <button type="button" id="set-alphabet-button">Set Alphabet</button>
+          <input type="text" id="alphabet" size="5" placeholder="01...">
+        </div>
+        or import it from file:
+        <input type="file" id="import-file" accept=".json">
+      </div>
+
+
+
+      <table id="display-table" class="init-hidden">
+      <caption id="caption"></caption>
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+
+      <div id="add-state-section" class="init-hidden">
+        <button type="button" id="add-state-button">Add State</button> 
+        <table id="add-state-table">
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="start-state-section" class="start-end-states">
+        <button type="button" id="set-start-state-button">Set Start State</button>
+        <input type="text" id="start-state" size="5" placeholder="q0">
+      </div>
+  
+      <div id="end-states-section" class="start-end-states">
+        <button type="button" id="set-end-states-button">Set End States</button>
+        <input type="text" id="end-states" size="5" placeholder="q0, q1..">
+      </div>
+      
+      <button type="button" id="transition-button" class="init-hidden" disabled="true"></button>
+      
+  </body>
+
+</html>

@@ -1,0 +1,30 @@
+{
+    "states_connections":[
+        [{"id":0,"name":"q0"},[
+                {"Value":[{"id":0,"name":"q0"},"0"]},
+                {"EMove":{"id":1,"name":"q1"}}]
+            ],
+        [{"id":1,"name":"q1"},[
+                {"Value":[{"id":2,"name":"q2"},"0"]},
+                {"Value":[{"id":3,"name":"q3"},"1"]}]
+            ],
+        [{"id":2,"name":"q2"},[
+                {"EMove":{"id":3,"name":"q3"}}]
+            ],
+        [{"id":3,"name":"q3"},[
+                {"Value":[{"id":3,"name":"q3"},"0"]},
+                {"Value":[{"id":1,"name":"q1"},"1"]},
+                {"EMove":{"id":4,"name":"q4"}}]
+            ],
+        [{"id":4,"name":"q4"},[
+                {"Value":[{"id":0,"name":"q0"},"1"]}]
+            ]
+    ],
+    "start_state":{"id":0,"name":"q0"}, 
+    "end_states":[
+            {"id":3,"name":"q3"}
+        ],
+    "automata_type":"AutomataEClosure",
+    "alphabet":"01",
+    "counter" : 5
+}

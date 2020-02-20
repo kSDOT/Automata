@@ -1,0 +1,39 @@
+{
+    "states_connections":[
+        [{"id":0,"name":"q0"},[
+                {"Value":[{"id":1,"name":"q1"},"1"]},
+                {"EMove":{"id":1,"name":"q1"}}]
+            ],
+
+        [{"id":1,"name":"q1"},[
+                {"EMove":{"id":0,"name":"q0"}},
+                {"EMove":{"id":2,"name":"q2"}}]
+            ],
+        
+        [{"id":2,"name":"q2"},[
+                {"Value":[{"id":3,"name":"q3"},"0"]},
+                {"EMove":{"id":4,"name":"q4"}}]
+            ],
+        [{"id":3,"name":"q3"},[
+                {"Value":[{"id":4,"name":"q4"},"1"]}]
+            ],
+        [{"id":4,"name":"q4"},[
+                {"EMove":{"id":2,"name":"q2"}},
+                {"EMove":{"id":5,"name":"q5"}}]
+            ],
+        [{"id":5,"name":"q5"},[
+                {"Value":[{"id":5,"name":"q5"},"1"]},
+                {"EMove":{"id":6,"name":"q6"}}]
+            ],
+        [{"id":6,"name":"q6"},[    
+                {"EMove":{"id":5,"name":"q5"}}]
+            ]
+    ],
+    "start_state":{"id":0,"name":"q0"},
+    "end_states":[
+            {"id":6,"name":"q6"}
+        ],
+    "automata_type":"AutomataEClosure",
+    "alphabet" : "10",
+    "counter" : 7
+}

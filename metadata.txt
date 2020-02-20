@@ -1,0 +1,5 @@
+//todo:
+//fix counter, ordering
+//fix data structures
+//gui with webassembler
+//remove rc and try to do it with references
