@@ -1,9 +1,22 @@
 import * as wasm from "automata";
+import { saveAs } from 'file-saver';
 
 var $;
 $ = require('jquery');
+ $.fn.enterKey = function (fnc) {
+        return this.each(function () {
+            $(this).keypress(function (ev) {
+                var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+                if (keycode == '13') {
+                    fnc.call(this, ev);
+                }
+            })
+        })
+    };
 
 $(document).ready(function(){
+   
+    
     var automata = $.parseJSON(wasm.init());
     var update_table_caption = function(){
         $("#caption").html("Type: " +  automata["automata_type"]);
@@ -17,12 +30,12 @@ $(document).ready(function(){
         var value = '<tr><td><input type="text" id="state" size="5" placeholder="q0"></td>';
         for (var i  = 0; i < alphabet.length; i++){
             $("table#display-table>thead").append("<th>" + alphabet.charAt(i) + "</th>");
-            value += '<td><input type="text" class="connection" id="connection_' + i + '" size="5" placeholder="q1"></td>';
+            value += '<td><input type="text" class="connection" id="connection_' + i + '" size="5" placeholder="q1, q2.."></td>';
         }
         if(automata["automata_type"] == "AutomataEClosure"){
          $("table#display-table>thead").append("<th>EMove</th>");
         }
-        value += '<td><input type="text" class="connection" id="connection_' + alphabet.length + '" size="5" placeholder="q1"><td></tr>';
+        value += '<td><input type="text" class="connection" id="connection_' + alphabet.length + '" size="5" placeholder="q1, q2.."><td></tr>';
         $("table#add-state-table>tbody").append(value);
 
         $("table#add-state-table>tbody").trigger('resize');
@@ -35,6 +48,7 @@ $(document).ready(function(){
                 $("#connection_"+(i-1)).css("width", ($(child).outerWidth(true) - 2) + "px");
             }
         });
+        $(".connection, #state").enterKey(function(){$("#add-state-button").trigger("click");});
     }   
 
     var update_states_display = function() {
@@ -90,7 +104,7 @@ $(document).ready(function(){
                          current_row+= connections[i][j] + ", ";
                      }
                      if (connections[i].length == 0){
-                         row+= "<td>-</td>";
+                         row+= "<td>Ø</td>";
                      }
                      else{
                       row += "<td>" + current_row.substr(0, current_row.length-2) + "</td>";
@@ -102,7 +116,7 @@ $(document).ready(function(){
 
                  $("table#display-table>tbody").append(row);
             }
-            else {//dfa display            
+            else {//dfa display          
                 var get_name = function(compound_state){
                     var init_value = "[";
                     $.each(compound_state["states"], function(i, each_val){ 
@@ -132,7 +146,6 @@ $(document).ready(function(){
                  for (var i  = 0; i < alphabet.length; i++){//for_each value connection
                      connections.push([]);
                      for (var j = 0; j < val[1].length; j++){
-                         console.log(val[1][j]);
                          if (val[1][j][1] === undefined)
                              continue;
                          if (val[1][j][1] == alphabet.charAt(i)){
@@ -148,7 +161,7 @@ $(document).ready(function(){
                          current_row+= connections[i][j] + ", ";
                      }
                      if (connections[i].length == 0){
-                         row+= "<td>-</td>";
+                         row+= "<td>Ø</td>";
                      }
                      else{
                       row += "<td>" + current_row.substr(0, current_row.length-2) + "</td>";
@@ -176,7 +189,7 @@ $(document).ready(function(){
             button.text("Transition to AutomataDfaMinimized");
         }
         else if(state == "AutomataMinimizedDFA"){
-            button.remove();
+            button.css("visibility", "hidden");
         }
     };
 
@@ -194,6 +207,7 @@ $(document).ready(function(){
             $(".start-end-states").css("visibility", "hidden");
         }
     }
+
     var transition = function(){
         var state = automata["automata_type"];
         if(state == "AutomataEClosure"){
@@ -219,22 +233,25 @@ $(document).ready(function(){
             return;
         }
         $("#state").val("");
-
+        
         automata = $.parseJSON(wasm.init_state(automata, value));//new_state
 
         var connections = $(".connection");
         $.each(connections, function(i, state){//each state new_state connected to
-                let name = $(state).val();
-                if (name != "") {
-                    automata = $.parseJSON(wasm.init_state(automata, name));
-                }
-                var char = '';
-                var emove = i >= automata["alphabet"].length;
-                if(!emove){
-                    char = automata["alphabet"].charAt(i);
-                }
-                automata = $.parseJSON(wasm.add_connection(automata, value, name, char, emove));
-                $(state).val("");
+                let names = $(state).val();
+                $.each(names.split(", "), function(index, name){
+                    if (name != "") {
+                        automata = $.parseJSON(wasm.init_state(automata, name));
+                    }
+                    var char = '';
+                    var emove = i >= automata["alphabet"].length;
+                    if(!emove){
+                        char = automata["alphabet"].charAt(i);
+                    }
+
+                    automata = $.parseJSON(wasm.add_connection(automata, value, name, char, emove));
+                    $(state).val("");
+                });
             }
         );
 
@@ -254,7 +271,9 @@ $(document).ready(function(){
         update_start_end_states_display();
         
     });
-
+    $("#alphabet").enterKey(function(){
+        $("#set-alphabet-button").trigger("click"); 
+    });
     $("#set-alphabet-button").on("click",function(){
         var val = $("#alphabet").val();
         $("#alphabet").val("");
@@ -262,7 +281,6 @@ $(document).ready(function(){
         $("#initial-prompt").remove();
         update_alphabet_display();
         $(".init-hidden").css("visibility", "visible");
-
     });
 
     $("#transition-button").on("click", function(){
@@ -280,7 +298,9 @@ $(document).ready(function(){
         update_states_display();
         update_transition_button_display();
     });
-
+    $("#start-state").enterKey(function(){
+        $("#set-start-state-button").trigger("click"); 
+    });
     $("#set-end-states-button").on("click", function(){
         $.each($("#end-states").val().split(", "), function(i, val){
             automata = $.parseJSON(wasm.set_end_state(automata, val));
@@ -294,18 +314,34 @@ $(document).ready(function(){
         update_states_display();
         update_transition_button_display();
     });
+    $("#end-states").enterKey(function(){
+        $("#set-end-states-button").trigger("click"); 
+    });
+    $("#import-file").change(function(){    
+        
+        var file = $("#import-file").prop('files')[0];
+        if (file){
+            var reader = new  FileReader();
+            reader.onload = function(e){
+                automata = JSON.parse(e.target.result);
+                $("#initial-prompt").remove();
+                update_states_display();
+                update_transition_button_display()
+                $(".init-hidden").css("visibility", "visible");
+                $(".start-end-states").remove();
+                update_alphabet_display();
+            };
+            reader.readAsText(file);
 
-    $("#import-file").change(function(){       
-        $.get("tests/" + $("#import-file").prop('files')[0]["name"], function(data){
-            automata = JSON.parse(JSON.stringify(data));
-            $("#initial-prompt").remove();
-            update_states_display();
-            update_transition_button_display()
-            $(".init-hidden").css("visibility", "visible");
-            $(".start-end-states").remove();
-            update_alphabet_display();
+        }
+    });
+
+    $("#export-automata").click(function(){    
+        var fileToSave = new Blob([JSON.stringify(automata)], {
+            type: 'application/json'
         });
 
+        saveAs(fileToSave, 'automata');
     });
 
     update_table_caption();

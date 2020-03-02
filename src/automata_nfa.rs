@@ -124,10 +124,12 @@ impl AutomataNFA {
         }
 
         self.states_connections.extend(new_values.into_iter()
-                                                 .map(|(key, values)| (key, values.into_iter()
-                                                                                  .collect()
-                                                                       )
-                                                                    )
+                                                 .map(|(key, values)| 
+                                                    (
+                                                     key, values.into_iter()
+                                                                .collect()
+                                                    )
+                                                 )
                                       );
 
         self.automata_type = AutomataType::AutomataNFA;

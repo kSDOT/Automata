@@ -88,8 +88,9 @@ impl AutomataDFA {
                                                         first_group.push(compound_state.clone());
                                                     }
                                                 );
-
-        groups.push(first_group);
+        if !first_group.is_empty(){                                     
+            groups.push(first_group);
+        }
         groups.push(end_group);
 
         while self.split(&mut groups){}
@@ -102,10 +103,7 @@ impl AutomataDFA {
                     for group in groups.iter() {
                         if group.len() > 1{
                             if group.iter().any(|compound_state| 
-                                compound_state.states.iter().any(
-                                    |state|
-                                        (tuple.0).states.contains(state)
-                                ) 
+                                compound_state.states == (tuple.0).states 
                             ) {//value needs update if true
                                 values_to_remove.push((tuple.clone(), group.to_vec()));
                             }
@@ -127,18 +125,17 @@ impl AutomataDFA {
                 let mut is_start = false;
                 for compound_state in group{
                     connections = skip_fail_loop!{self.states_connections.remove(&compound_state.clone()), Option<_>};      
-                    compound_state.states.iter().any(|state|{
-                        if let Some(start_state) = &self.start_state { 
-                            if start_state.states.contains(&state.clone()){
-                                is_start = true;
-                            }
+                    
+                    if let Some(start_state) = &self.start_state { 
+                        if start_state.states == compound_state.states {
+                            is_start = true;
                         }
-                        if self.end_states.borrow().iter().any(|cstate| cstate.states.contains(&state.clone())){
-                            is_end = true;
-                        }
-                        is_end && is_start
-                    });          
+                    }
+                    if self.end_states.borrow().iter().any(|cstate| cstate.states == compound_state.states){
+                        is_end = true;
+                    } 
                 }
+
                 let new_state = Rc::new(CompoundState::new_from_compound(group.to_vec()));
                 self.states_connections.insert(new_state.clone(), connections);
                 if is_start{
@@ -163,7 +160,9 @@ impl AutomataDFA {
 
         let mut changes =  false;
         for (group_index, group) in groups_arg.iter().enumerate() {    
-            new_groups[group_index].push(group[0].clone());
+            if group.len() > 0 {
+                new_groups[group_index].push(group[0].clone());
+            }
             for state in group.iter().skip(1) {
                 if !self.is_same_group(group[0].clone(), state.clone(), groups_arg){//needs to be put in a new group
                     changes = true;
