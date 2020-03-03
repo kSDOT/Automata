@@ -55,6 +55,7 @@ $(document).ready(function(){
         var states = automata["states_connections"];
         var alphabet = automata["alphabet"];
         $("table#display-table>tbody").html("");
+        var has_dead_state = false;  
         $.each(states, function(index, val) {
             if(automata["automata_type"] == "AutomataEClosure" || automata["automata_type"] == "AutomataNFA"){
                  var row = "<tr>";
@@ -116,7 +117,7 @@ $(document).ready(function(){
 
                  $("table#display-table>tbody").append(row);
             }
-            else {//dfa display          
+            else {//dfa display        
                 var get_name = function(compound_state){
                     var init_value = "[";
                     $.each(compound_state["states"], function(i, each_val){ 
@@ -162,6 +163,7 @@ $(document).ready(function(){
                      }
                      if (connections[i].length == 0){
                          row+= "<td>Ø</td>";
+                         has_dead_state = true;
                      }
                      else{
                       row += "<td>" + current_row.substr(0, current_row.length-2) + "</td>";
@@ -173,7 +175,17 @@ $(document).ready(function(){
 
                  $("table#display-table>tbody").append(row);
             }
-        });   
+        });
+        if (has_dead_state){
+            var row = "<tr><td>Ø</td>";
+            
+            for(var i = 0; i < alphabet.length; i++){
+                row+= "<td>Ø</td>";
+            }
+                
+            row += "</tr>";
+            $("table#display-table>tbody").append(row);
+        }   
     }
 
     var update_transition_button_text = function(){
